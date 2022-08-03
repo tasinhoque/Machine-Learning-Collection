@@ -23,8 +23,14 @@ import typing
 
 tf.config.run_functions_eagerly(True)
 
+
 @tf.function
-def ResNet(name: str, layers: typing.List[int], input_shape: typing.Tuple[int] = (64, 64, 3), classes: int = 6) -> Model:
+def ResNet(
+    name: str,
+    layers: typing.List[int],
+    input_shape: typing.Tuple[int] = (64, 64, 3),
+    classes: int = 6,
+) -> Model:
     """
     Implementation of the popular ResNet architecture.
 
@@ -78,44 +84,60 @@ def ResNet(name: str, layers: typing.List[int], input_shape: typing.Tuple[int] =
 
     # conv1
     X = Conv2D(
-        filters = 64,
-        kernel_size = (7, 7),
-        strides = (2, 2),
-        name = "conv1",
-        kernel_initializer = "glorot_uniform",
+        filters=64,
+        kernel_size=(7, 7),
+        strides=(2, 2),
+        name="conv1",
+        kernel_initializer="glorot_uniform",
     )(X)
-    X = BatchNormalization(axis = 3, name = "bn_conv1")(X)
+    X = BatchNormalization(axis=3, name="bn_conv1")(X)
     X = Activation("relu")(X)
-    X = MaxPooling2D((3, 3), strides = (2, 2))(X)
+    X = MaxPooling2D((3, 3), strides=(2, 2))(X)
 
     # conv2_x
-    X = make_layer(X, layers = layer2, kernel_size = 3, filters = [64, 64, 256], stride = 1, stage_no = 2)
+    X = make_layer(
+        X, layers=layer2, kernel_size=3, filters=[64, 64, 256], stride=1, stage_no=2
+    )
 
     # conv3_x
-    X = make_layer(X, layers = layer3, kernel_size = 3, filters = [128, 128, 512], stride = 2, stage_no = 3)
+    X = make_layer(
+        X, layers=layer3, kernel_size=3, filters=[128, 128, 512], stride=2, stage_no=3
+    )
 
     # conv4_x
-    X = make_layer(X, layers = layer4, kernel_size = 3, filters = [256, 256, 1024], stride = 2, stage_no = 4)
+    X = make_layer(
+        X, layers=layer4, kernel_size=3, filters=[256, 256, 1024], stride=2, stage_no=4
+    )
 
     # conv5_x
-    X = make_layer(X, layers = layer5, kernel_size = 3, filters = [512, 512, 2048], stride = 1, stage_no = 5)
+    X = make_layer(
+        X, layers=layer5, kernel_size=3, filters=[512, 512, 2048], stride=1, stage_no=5
+    )
 
     # average pooling
-    X = AveragePooling2D((2, 2), name = "avg_pool")(X)
+    X = AveragePooling2D((2, 2), name="avg_pool")(X)
 
     # output layer
     X = Flatten()(X)
     X = Dense(
         classes,
-        activation = "softmax",
+        activation="softmax",
         name="fc" + str(classes),
-        kernel_initializer = "glorot_uniform"
+        kernel_initializer="glorot_uniform",
     )(X)
 
-    model = Model(inputs = X_input, outputs = X, name = name)
+    model = Model(inputs=X_input, outputs=X, name=name)
     return model
 
-def make_layer(X: tf.Tensor, layers: int, kernel_size: int, filters: typing.List[int], stride: int, stage_no: int) -> tf.Tensor:
+
+def make_layer(
+    X: tf.Tensor,
+    layers: int,
+    kernel_size: int,
+    filters: typing.List[int],
+    stride: int,
+    stage_no: int,
+) -> tf.Tensor:
     """
     Method to create one conv-identity layer for ResNet.
 
@@ -134,12 +156,12 @@ def make_layer(X: tf.Tensor, layers: int, kernel_size: int, filters: typing.List
     # create convolution block
     X = block(
         X,
-        kernel_size = kernel_size,
-        filters = filters,
-        stage_no = stage_no,
-        block_name = "a",
-        is_conv_layer = True,
-        stride = stride
+        kernel_size=kernel_size,
+        filters=filters,
+        stage_no=stage_no,
+        block_name="a",
+        is_conv_layer=True,
+        stride=stride,
     )
 
     # create identity block
@@ -147,10 +169,10 @@ def make_layer(X: tf.Tensor, layers: int, kernel_size: int, filters: typing.List
     for _ in range(layers - 1):
         X = block(
             X,
-            kernel_size = kernel_size,
-            filters =  filters,
-            stage_no = stage_no,
-            block_name = chr(block_name_ordinal)
+            kernel_size=kernel_size,
+            filters=filters,
+            stage_no=stage_no,
+            block_name=chr(block_name_ordinal),
         )
         block_name_ordinal += 1
 

@@ -130,7 +130,10 @@ def get_loader(
 
 if __name__ == "__main__":
     transform = transforms.Compose(
-        [transforms.Resize((224, 224)), transforms.ToTensor(),]
+        [
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+        ]
     )
 
     loader, dataset = get_loader(

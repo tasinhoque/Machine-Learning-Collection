@@ -49,7 +49,7 @@ class YoloLoss(nn.Module):
         #   FOR BOX COORDINATES    #
         # ======================== #
 
-        # Set boxes with no object in them to 0. We only take out one of the two 
+        # Set boxes with no object in them to 0. We only take out one of the two
         # predictions, which is the one with highest Iou calculated previously.
         box_predictions = exists_box * (
             (
@@ -89,11 +89,11 @@ class YoloLoss(nn.Module):
         #   FOR NO OBJECT LOSS    #
         # ======================= #
 
-        #max_no_obj = torch.max(predictions[..., 20:21], predictions[..., 25:26])
-        #no_object_loss = self.mse(
+        # max_no_obj = torch.max(predictions[..., 20:21], predictions[..., 25:26])
+        # no_object_loss = self.mse(
         #    torch.flatten((1 - exists_box) * max_no_obj, start_dim=1),
         #    torch.flatten((1 - exists_box) * target[..., 20:21], start_dim=1),
-        #)
+        # )
 
         no_object_loss = self.mse(
             torch.flatten((1 - exists_box) * predictions[..., 20:21], start_dim=1),
@@ -102,7 +102,7 @@ class YoloLoss(nn.Module):
 
         no_object_loss += self.mse(
             torch.flatten((1 - exists_box) * predictions[..., 25:26], start_dim=1),
-            torch.flatten((1 - exists_box) * target[..., 20:21], start_dim=1)
+            torch.flatten((1 - exists_box) * target[..., 20:21], start_dim=1),
         )
 
         # ================== #
@@ -110,8 +110,14 @@ class YoloLoss(nn.Module):
         # ================== #
 
         class_loss = self.mse(
-            torch.flatten(exists_box * predictions[..., :20], end_dim=-2,),
-            torch.flatten(exists_box * target[..., :20], end_dim=-2,),
+            torch.flatten(
+                exists_box * predictions[..., :20],
+                end_dim=-2,
+            ),
+            torch.flatten(
+                exists_box * target[..., :20],
+                end_dim=-2,
+            ),
         )
 
         loss = (

@@ -3,7 +3,7 @@ import torch
 from math import log2
 
 START_TRAIN_AT_IMG_SIZE = 128
-DATASET = 'celeb_dataset'
+DATASET = "celeb_dataset"
 CHECKPOINT_GEN = "generator.pth"
 CHECKPOINT_CRITIC = "critic.pth"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"

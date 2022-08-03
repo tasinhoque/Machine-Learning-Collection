@@ -7,9 +7,7 @@ import torch.nn as nn
 import warnings
 
 # Print losses occasionally and print to tensorboard
-def plot_to_tensorboard(
-    writer, loss_critic, loss_gen, real, fake, tensorboard_step
-):
+def plot_to_tensorboard(writer, loss_critic, loss_gen, real, fake, tensorboard_step):
     writer.add_scalar("Loss Critic", loss_critic, global_step=tensorboard_step)
 
     with torch.no_grad():
@@ -65,7 +63,7 @@ def load_checkpoint(checkpoint_file, model, optimizer, lr):
 
 
 def seed_everything(seed=42):
-    os.environ['PYTHONHASHSEED'] = str(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -78,7 +76,9 @@ def seed_everything(seed=42):
 class EMA:
     # Found this useful (thanks alexis-jacq):
     # https://discuss.pytorch.org/t/how-to-apply-exponential-moving-average-decay-for-variables/10856/3
-    def __init__(self, gamma=0.99, save=True, save_frequency=100, save_filename="ema_weights.pth"):
+    def __init__(
+        self, gamma=0.99, save=True, save_frequency=100, save_filename="ema_weights.pth"
+    ):
         """
         Initialize the weight to which we will do the
         exponential moving average and the dictionary
@@ -94,7 +94,9 @@ class EMA:
             self.registered = torch.load(self.save_filename)
 
         if not save:
-            warnings.warn("Note that the exponential moving average weights will not be saved to a .pth file!")
+            warnings.warn(
+                "Note that the exponential moving average weights will not be saved to a .pth file!"
+            )
 
     def register_weights(self, model):
         """
@@ -109,7 +111,11 @@ class EMA:
         self.count += 1
         for name, param in model.named_parameters():
             if param.requires_grad:
-                new_weight = param.clone().detach() if name not in self.registered else self.gamma * param + (1 - self.gamma) * self.registered[name]
+                new_weight = (
+                    param.clone().detach()
+                    if name not in self.registered
+                    else self.gamma * param + (1 - self.gamma) * self.registered[name]
+                )
                 self.registered[name] = new_weight
 
         if self.count % self.save_frequency == 0:
@@ -122,5 +128,3 @@ class EMA:
 
     def save_ema_weights(self):
         torch.save(self.registered, self.save_filename)
-
-

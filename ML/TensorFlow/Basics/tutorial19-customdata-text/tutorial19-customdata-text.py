@@ -83,7 +83,7 @@ tokenizer = tfds.features.text.Tokenizer()
 
 
 def build_vocabulary(ds_train, threshold=200):
-    """ Build a vocabulary """
+    """Build a vocabulary"""
     frequencies = {}
     vocabulary = set()
     vocabulary.update(["sostoken"])
@@ -118,7 +118,10 @@ pickle.dump(vocabulary, vocab_file)
 # vocabulary = pickle.load(vocab_file)
 
 encoder = tfds.features.text.TokenTextEncoder(
-    list(vocabulary), oov_token="<UNK>", lowercase=True, tokenizer=tokenizer,
+    list(vocabulary),
+    oov_token="<UNK>",
+    lowercase=True,
+    tokenizer=tokenizer,
 )
 
 
@@ -134,7 +137,9 @@ def encode_map_fn(line):
     label = 1 if label_str == "pos" else 0
 
     (encoded_text, label) = tf.py_function(
-        my_encoder, inp=[review, label], Tout=(tf.int64, tf.int32),
+        my_encoder,
+        inp=[review, label],
+        Tout=(tf.int64, tf.int32),
     )
 
     encoded_text.set_shape([None])
@@ -153,7 +158,10 @@ ds_test = ds_test.padded_batch(32, padded_shapes=([None], ()))
 model = keras.Sequential(
     [
         layers.Masking(mask_value=0),
-        layers.Embedding(input_dim=len(vocabulary) + 2, output_dim=32,),
+        layers.Embedding(
+            input_dim=len(vocabulary) + 2,
+            output_dim=32,
+        ),
         layers.GlobalAveragePooling1D(),
         layers.Dense(64, activation="relu"),
         layers.Dense(1),

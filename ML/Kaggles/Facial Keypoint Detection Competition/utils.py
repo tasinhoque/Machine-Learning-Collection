@@ -31,7 +31,9 @@ def get_submission(loader, dataset, model_15, model_4):
 
         image_id += 1
 
-    df = pd.DataFrame({"RowId": np.arange(1, len(predictions)+1), "Location": predictions})
+    df = pd.DataFrame(
+        {"RowId": np.arange(1, len(predictions) + 1), "Location": predictions}
+    )
     df.to_csv("submission.csv", index=False)
     model_15.train()
     model_4.train()

@@ -35,11 +35,12 @@ transforms = transforms.Compose(
 )
 
 # If you train on MNIST, remember to set channels_img to 1
-dataset = datasets.MNIST(root="dataset/", train=True, transform=transforms,
-                       download=True)
+dataset = datasets.MNIST(
+    root="dataset/", train=True, transform=transforms, download=True
+)
 
 # comment mnist above and uncomment below if train on CelebA
-#dataset = datasets.ImageFolder(root="celeb_dataset", transform=transforms)
+# dataset = datasets.ImageFolder(root="celeb_dataset", transform=transforms)
 dataloader = DataLoader(dataset, batch_size=BATCH_SIZE, shuffle=True)
 gen = Generator(NOISE_DIM, CHANNELS_IMG, FEATURES_GEN).to(device)
 disc = Discriminator(CHANNELS_IMG, FEATURES_DISC).to(device)
@@ -92,12 +93,8 @@ for epoch in range(NUM_EPOCHS):
             with torch.no_grad():
                 fake = gen(fixed_noise)
                 # take out (up to) 32 examples
-                img_grid_real = torchvision.utils.make_grid(
-                    real[:32], normalize=True
-                )
-                img_grid_fake = torchvision.utils.make_grid(
-                    fake[:32], normalize=True
-                )
+                img_grid_real = torchvision.utils.make_grid(real[:32], normalize=True)
+                img_grid_fake = torchvision.utils.make_grid(fake[:32], normalize=True)
 
                 writer_real.add_image("Real", img_grid_real, global_step=step)
                 writer_fake.add_image("Fake", img_grid_fake, global_step=step)

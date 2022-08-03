@@ -82,7 +82,10 @@ def main():
         check_accuracy(train_loader, model, loss_fn)
 
     if config.SAVE_MODEL:
-        checkpoint = {"state_dict": model.state_dict(), "optimizer": optimizer.state_dict()}
+        checkpoint = {
+            "state_dict": model.state_dict(),
+            "optimizer": optimizer.state_dict(),
+        }
         save_checkpoint(checkpoint, filename=config.CHECKPOINT_FILE)
 
     save_feature_vectors(model, train_loader, output_size=(1, 1), file="train_b7")

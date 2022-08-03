@@ -17,27 +17,38 @@ x_test = x_test.astype("float32") / 255.0
 
 def my_model():
     inputs = keras.Input(shape=(32, 32, 3))
-    x = layers.Conv2D(32, 3, padding="same", kernel_regularizer=regularizers.l2(0.01),)(
-        inputs
-    )
-    x = layers.BatchNormalization()(x)
-    x = keras.activations.relu(x)
-    x = layers.MaxPooling2D()(x)
-    x = layers.Conv2D(64, 3, padding="same", kernel_regularizer=regularizers.l2(0.01),)(
-        x
-    )
+    x = layers.Conv2D(
+        32,
+        3,
+        padding="same",
+        kernel_regularizer=regularizers.l2(0.01),
+    )(inputs)
     x = layers.BatchNormalization()(x)
     x = keras.activations.relu(x)
     x = layers.MaxPooling2D()(x)
     x = layers.Conv2D(
-        128, 3, padding="same", kernel_regularizer=regularizers.l2(0.01),
+        64,
+        3,
+        padding="same",
+        kernel_regularizer=regularizers.l2(0.01),
+    )(x)
+    x = layers.BatchNormalization()(x)
+    x = keras.activations.relu(x)
+    x = layers.MaxPooling2D()(x)
+    x = layers.Conv2D(
+        128,
+        3,
+        padding="same",
+        kernel_regularizer=regularizers.l2(0.01),
     )(x)
     x = layers.BatchNormalization()(x)
     x = keras.activations.relu(x)
     x = layers.Flatten()(x)
-    x = layers.Dense(64, activation="relu", kernel_regularizer=regularizers.l2(0.01),)(
-        x
-    )
+    x = layers.Dense(
+        64,
+        activation="relu",
+        kernel_regularizer=regularizers.l2(0.01),
+    )(x)
     x = layers.Dropout(0.5)(x)
     outputs = layers.Dense(10)(x)
     model = keras.Model(inputs=inputs, outputs=outputs)

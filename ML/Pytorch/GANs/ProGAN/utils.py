@@ -9,9 +9,7 @@ from torchvision.utils import save_image
 from scipy.stats import truncnorm
 
 # Print losses occasionally and print to tensorboard
-def plot_to_tensorboard(
-    writer, loss_critic, loss_gen, real, fake, tensorboard_step
-):
+def plot_to_tensorboard(writer, loss_critic, loss_gen, real, fake, tensorboard_step):
     writer.add_scalar("Loss Critic", loss_critic, global_step=tensorboard_step)
 
     with torch.no_grad():
@@ -65,8 +63,9 @@ def load_checkpoint(checkpoint_file, model, optimizer, lr):
     for param_group in optimizer.param_groups:
         param_group["lr"] = lr
 
+
 def seed_everything(seed=42):
-    os.environ['PYTHONHASHSEED'] = str(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -74,6 +73,7 @@ def seed_everything(seed=42):
     torch.cuda.manual_seed_all(seed)
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
+
 
 def generate_examples(gen, steps, truncation=0.7, n=100):
     """
@@ -84,7 +84,11 @@ def generate_examples(gen, steps, truncation=0.7, n=100):
     alpha = 1.0
     for i in range(n):
         with torch.no_grad():
-            noise = torch.tensor(truncnorm.rvs(-truncation, truncation, size=(1, config.Z_DIM, 1, 1)), device=config.DEVICE, dtype=torch.float32)
+            noise = torch.tensor(
+                truncnorm.rvs(-truncation, truncation, size=(1, config.Z_DIM, 1, 1)),
+                device=config.DEVICE,
+                dtype=torch.float32,
+            )
             img = gen(noise, alpha, steps)
-            save_image(img*0.5+0.5, f"saved_examples/img_{i}.png")
+            save_image(img * 0.5 + 0.5, f"saved_examples/img_{i}.png")
     gen.train()

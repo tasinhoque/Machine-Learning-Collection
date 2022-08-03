@@ -76,7 +76,7 @@ def train_fn(
             loss_critic = (
                 -(torch.mean(critic_real) - torch.mean(critic_fake))
                 + config.LAMBDA_GP * gp
-                + (0.001 * torch.mean(critic_real ** 2))
+                + (0.001 * torch.mean(critic_real**2))
             )
 
         opt_critic.zero_grad()
@@ -145,10 +145,16 @@ def main():
 
     if config.LOAD_MODEL:
         load_checkpoint(
-            config.CHECKPOINT_GEN, gen, opt_gen, config.LEARNING_RATE,
+            config.CHECKPOINT_GEN,
+            gen,
+            opt_gen,
+            config.LEARNING_RATE,
         )
         load_checkpoint(
-            config.CHECKPOINT_CRITIC, critic, opt_critic, config.LEARNING_RATE,
+            config.CHECKPOINT_CRITIC,
+            critic,
+            opt_critic,
+            config.LEARNING_RATE,
         )
 
     gen.train()
@@ -159,7 +165,7 @@ def main():
     step = int(log2(config.START_TRAIN_AT_IMG_SIZE / 4))
     for num_epochs in config.PROGRESSIVE_EPOCHS[step:]:
         alpha = 1e-5  # start with very low alpha
-        loader, dataset = get_loader(4 * 2 ** step)  # 4->0, 8->1, 16->2, 32->3, 64 -> 4
+        loader, dataset = get_loader(4 * 2**step)  # 4->0, 8->1, 16->2, 32->3, 64 -> 4
         print(f"Current image size: {4 * 2 ** step}")
 
         for epoch in range(num_epochs):

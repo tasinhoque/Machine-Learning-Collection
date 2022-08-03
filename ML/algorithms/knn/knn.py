@@ -73,11 +73,11 @@ class KNearestNeighbor:
         vecotorization as well as numpy broadcasting.
         Idea: if we have two vectors a, b (two examples)
         and for vectors we can compute (a-b)^2 = a^2 - 2a (dot) b + b^2
-        expanding on this and doing so for every vector lends to the 
+        expanding on this and doing so for every vector lends to the
         heavy vectorized formula for all examples at the same time.
         """
-        X_test_squared = np.sum(X_test ** 2, axis=1, keepdims=True)
-        X_train_squared = np.sum(self.X_train ** 2, axis=1, keepdims=True)
+        X_test_squared = np.sum(X_test**2, axis=1, keepdims=True)
+        X_train_squared = np.sum(self.X_train**2, axis=1, keepdims=True)
         two_X_test_X_train = np.dot(X_test, self.X_train.T)
 
         # (Taking sqrt is not necessary: min distance won't change since sqrt is monotone)

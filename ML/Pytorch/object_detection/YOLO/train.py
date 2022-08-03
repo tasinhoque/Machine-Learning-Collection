@@ -26,10 +26,10 @@ from loss import YoloLoss
 seed = 123
 torch.manual_seed(seed)
 
-# Hyperparameters etc. 
+# Hyperparameters etc.
 LEARNING_RATE = 2e-5
 DEVICE = "cuda" if torch.cuda.is_available else "cpu"
-BATCH_SIZE = 16 # 64 in original paper but I don't have that much vram, grad accum?
+BATCH_SIZE = 16  # 64 in original paper but I don't have that much vram, grad accum?
 WEIGHT_DECAY = 0
 EPOCHS = 1000
 NUM_WORKERS = 2
@@ -51,7 +51,12 @@ class Compose(object):
         return img, bboxes
 
 
-transform = Compose([transforms.Resize((448, 448)), transforms.ToTensor(),])
+transform = Compose(
+    [
+        transforms.Resize((448, 448)),
+        transforms.ToTensor(),
+    ]
+)
 
 
 def train_fn(train_loader, model, optimizer, loss_fn):
@@ -91,7 +96,10 @@ def main():
     )
 
     test_dataset = VOCDataset(
-        "data/test.csv", transform=transform, img_dir=IMG_DIR, label_dir=LABEL_DIR,
+        "data/test.csv",
+        transform=transform,
+        img_dir=IMG_DIR,
+        label_dir=LABEL_DIR,
     )
 
     train_loader = DataLoader(
@@ -132,7 +140,7 @@ def main():
         )
         print(f"Train mAP: {mean_avg_prec}")
 
-        #if mean_avg_prec > 0.9:
+        # if mean_avg_prec > 0.9:
         #    checkpoint = {
         #        "state_dict": model.state_dict(),
         #        "optimizer": optimizer.state_dict(),

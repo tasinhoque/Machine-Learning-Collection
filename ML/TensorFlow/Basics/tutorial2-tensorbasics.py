@@ -49,7 +49,7 @@ z = x * y
 
 z = tf.tensordot(x, y, axes=1)
 
-z = x ** 5
+z = x**5
 
 x = tf.random.normal((2, 3))
 y = tf.random.normal((3, 2))

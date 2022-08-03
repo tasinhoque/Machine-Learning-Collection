@@ -112,7 +112,7 @@ t += x  # Also inplace: t = t + x is not inplace, bit confusing.
 
 # -- Exponentiation (Element wise if vector or matrices) --
 z = x.pow(2)  # z = [1, 4, 9]
-z = x ** 2  # z = [1, 4, 9]
+z = x**2  # z = [1, 4, 9]
 
 
 # -- Simple Comparison --
@@ -153,7 +153,7 @@ z = (
     x1 - x2
 )  # Shape of z is 5x5: How? The 1x5 vector (x2) is subtracted for each row in the 5x5 (x1)
 z = (
-    x1 ** x2
+    x1**x2
 )  # Shape of z is 5x5: How? Broadcasting! Element wise exponentiation for every row
 
 # Other useful tensor operations

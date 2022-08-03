@@ -34,7 +34,9 @@ def check_accuracy(
                 x = x.reshape(x.shape[0], *input_shape)
             scores = model(x)
             predictions = torch.sigmoid(scores) > 0.5
-            y_preds.append(torch.clip(torch.sigmoid(scores), 0.005, 0.995).cpu().numpy())
+            y_preds.append(
+                torch.clip(torch.sigmoid(scores), 0.005, 0.995).cpu().numpy()
+            )
             y_true.append(y.cpu().numpy())
             num_correct += (predictions.squeeze(1) == y).sum()
             num_samples += predictions.size(0)
@@ -136,7 +138,14 @@ def create_submission(model, model_name, files_dir):
         ),
     }
 
-    for t in ["base", "horizontal_flip", "vertical_flip", "coloring", "rotate", "shear"]:
+    for t in [
+        "base",
+        "horizontal_flip",
+        "vertical_flip",
+        "coloring",
+        "rotate",
+        "shear",
+    ]:
         predictions = []
         labels = []
         all_files = []
@@ -150,7 +159,10 @@ def create_submission(model, model_name, files_dir):
             x = x.to(config.DEVICE)
             with torch.no_grad():
                 outputs = (
-                    torch.clip(torch.sigmoid(model(x)), 0.005, 0.995).squeeze(1).cpu().numpy()
+                    torch.clip(torch.sigmoid(model(x)), 0.005, 0.995)
+                    .squeeze(1)
+                    .cpu()
+                    .numpy()
                 )
                 predictions.append(outputs)
                 labels += y.numpy().tolist()

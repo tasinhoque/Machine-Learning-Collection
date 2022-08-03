@@ -16,7 +16,7 @@ class MyImageFolder(Dataset):
 
         for index, name in enumerate(self.class_names):
             files = os.listdir(os.path.join(root_dir, name))
-            self.data += list(zip(files, [index]*len(files)))
+            self.data += list(zip(files, [index] * len(files)))
 
     def __len__(self):
         return len(self.data)
@@ -31,4 +31,3 @@ class MyImageFolder(Dataset):
             image = augmentations["image"]
 
         return image, label
-

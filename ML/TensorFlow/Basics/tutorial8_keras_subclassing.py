@@ -31,7 +31,13 @@ class CNNBlock(layers.Layer):
 
 
 model = keras.Sequential(
-    [CNNBlock(32), CNNBlock(64), CNNBlock(128), layers.Flatten(), layers.Dense(10),]
+    [
+        CNNBlock(32),
+        CNNBlock(64),
+        CNNBlock(128),
+        layers.Flatten(),
+        layers.Dense(10),
+    ]
 )
 
 
@@ -48,7 +54,10 @@ class ResBlock(layers.Layer):
     def call(self, input_tensor, training=False):
         x = self.cnn1(input_tensor, training=training)
         x = self.cnn2(x, training=training)
-        x = self.cnn3(x + self.identity_mapping(input_tensor), training=training,)
+        x = self.cnn3(
+            x + self.identity_mapping(input_tensor),
+            training=training,
+        )
         x = self.pooling(x)
         return x
 

@@ -16,16 +16,19 @@ transform = A.Compose(
         A.HorizontalFlip(p=0.5),
         A.VerticalFlip(p=0.1),
         A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=0.9),
-        A.OneOf([
-            A.Blur(blur_limit=3, p=0.5),
-            A.ColorJitter(p=0.5),
-        ], p=1.0),
+        A.OneOf(
+            [
+                A.Blur(blur_limit=3, p=0.5),
+                A.ColorJitter(p=0.5),
+            ],
+            p=1.0,
+        ),
     ]
 )
 
 images_list = [image]
 image = np.array(image)
-mask = np.array(mask) # np.asarray(mask), np.array(mask)
+mask = np.array(mask)  # np.asarray(mask), np.array(mask)
 mask2 = np.array(mask2)
 for i in range(4):
     augmentations = transform(image=image, masks=[mask, mask2])

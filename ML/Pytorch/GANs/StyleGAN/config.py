@@ -4,10 +4,11 @@ import torch
 from math import log2
 
 from albumentations.pytorch import ToTensorV2
-#from utils import seed_everything
+
+# from utils import seed_everything
 
 START_TRAIN_AT_IMG_SIZE = 32
-DATASET = 'FFHQ_32'
+DATASET = "FFHQ_32"
 CHECKPOINT_GEN = "generator.pth"
 CHECKPOINT_CRITIC = "critic.pth"
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"

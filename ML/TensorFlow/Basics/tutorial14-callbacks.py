@@ -44,7 +44,10 @@ model = keras.Sequential(
 )
 
 save_callback = keras.callbacks.ModelCheckpoint(
-    "checkpoint/", save_weights_only=True, monitor="train_acc", save_best_only=False,
+    "checkpoint/",
+    save_weights_only=True,
+    monitor="train_acc",
+    save_best_only=False,
 )
 
 lr_scheduler = keras.callbacks.ReduceLROnPlateau(

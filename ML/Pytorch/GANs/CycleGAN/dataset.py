@@ -3,6 +3,7 @@ import os
 from torch.utils.data import Dataset
 import numpy as np
 
+
 class HorseZebraDataset(Dataset):
     def __init__(self, root_zebra, root_horse, transform=None):
         self.root_zebra = root_zebra
@@ -11,7 +12,9 @@ class HorseZebraDataset(Dataset):
 
         self.zebra_images = os.listdir(root_zebra)
         self.horse_images = os.listdir(root_horse)
-        self.length_dataset = max(len(self.zebra_images), len(self.horse_images)) # 1000, 1500
+        self.length_dataset = max(
+            len(self.zebra_images), len(self.horse_images)
+        )  # 1000, 1500
         self.zebra_len = len(self.zebra_images)
         self.horse_len = len(self.horse_images)
 
@@ -34,8 +37,3 @@ class HorseZebraDataset(Dataset):
             horse_img = augmentations["image0"]
 
         return zebra_img, horse_img
-
-
-
-
-

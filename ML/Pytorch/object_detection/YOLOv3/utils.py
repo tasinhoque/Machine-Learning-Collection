@@ -235,7 +235,9 @@ def mean_average_precision(
 def plot_image(image, boxes):
     """Plots predicted bounding boxes on the image"""
     cmap = plt.get_cmap("tab20b")
-    class_labels = config.COCO_LABELS if config.DATASET=='COCO' else config.PASCAL_CLASSES
+    class_labels = (
+        config.COCO_LABELS if config.DATASET == "COCO" else config.PASCAL_CLASSES
+    )
     colors = [cmap(i) for i in np.linspace(0, 1, len(class_labels))]
     im = np.array(image)
     height, width, _ = im.shape
@@ -250,7 +252,9 @@ def plot_image(image, boxes):
 
     # Create a Rectangle patch
     for box in boxes:
-        assert len(box) == 6, "box should contain class pred, confidence, x, y, width, height"
+        assert (
+            len(box) == 6
+        ), "box should contain class pred, confidence, x, y, width, height"
         class_pred = box[0]
         box = box[2:]
         upper_left_x = box[0] - box[2] / 2
@@ -302,16 +306,12 @@ def get_evaluation_bboxes(
         for i in range(3):
             S = predictions[i].shape[2]
             anchor = torch.tensor([*anchors[i]]).to(device) * S
-            boxes_scale_i = cells_to_bboxes(
-                predictions[i], anchor, S=S, is_preds=True
-            )
+            boxes_scale_i = cells_to_bboxes(predictions[i], anchor, S=S, is_preds=True)
             for idx, (box) in enumerate(boxes_scale_i):
                 bboxes[idx] += box
 
         # we just want one bbox for each label, not one for each scale
-        true_bboxes = cells_to_bboxes(
-            labels[2], anchor, S=S, is_preds=False
-        )
+        true_bboxes = cells_to_bboxes(labels[2], anchor, S=S, is_preds=False)
 
         for idx in range(batch_size):
             nms_boxes = non_max_suppression(
@@ -370,8 +370,11 @@ def cells_to_bboxes(predictions, anchors, S, is_preds=True):
     x = 1 / S * (box_predictions[..., 0:1] + cell_indices)
     y = 1 / S * (box_predictions[..., 1:2] + cell_indices.permute(0, 1, 3, 2, 4))
     w_h = 1 / S * box_predictions[..., 2:4]
-    converted_bboxes = torch.cat((best_class, scores, x, y, w_h), dim=-1).reshape(BATCH_SIZE, num_anchors * S * S, 6)
+    converted_bboxes = torch.cat((best_class, scores, x, y, w_h), dim=-1).reshape(
+        BATCH_SIZE, num_anchors * S * S, 6
+    )
     return converted_bboxes.tolist()
+
 
 def check_class_accuracy(model, loader, threshold):
     model.eval()
@@ -386,7 +389,7 @@ def check_class_accuracy(model, loader, threshold):
 
         for i in range(3):
             y[i] = y[i].to(config.DEVICE)
-            obj = y[i][..., 0] == 1 # in paper this is Iobj_i
+            obj = y[i][..., 0] == 1  # in paper this is Iobj_i
             noobj = y[i][..., 0] == 0  # in paper this is Iobj_i
 
             correct_class += torch.sum(
@@ -412,11 +415,11 @@ def get_mean_std(loader):
 
     for data, _ in tqdm(loader):
         channels_sum += torch.mean(data, dim=[0, 2, 3])
-        channels_sqrd_sum += torch.mean(data ** 2, dim=[0, 2, 3])
+        channels_sqrd_sum += torch.mean(data**2, dim=[0, 2, 3])
         num_batches += 1
 
     mean = channels_sum / num_batches
-    std = (channels_sqrd_sum / num_batches - mean ** 2) ** 0.5
+    std = (channels_sqrd_sum / num_batches - mean**2) ** 0.5
 
     return mean, std
 
@@ -498,6 +501,7 @@ def get_loaders(train_csv_path, test_csv_path):
 
     return train_loader, test_loader, train_eval_loader
 
+
 def plot_couple_examples(model, loader, thresh, iou_thresh, anchors):
     model.eval()
     x, y = next(iter(loader))
@@ -508,9 +512,7 @@ def plot_couple_examples(model, loader, thresh, iou_thresh, anchors):
         for i in range(3):
             batch_size, A, S, _, _ = out[i].shape
             anchor = anchors[i]
-            boxes_scale_i = cells_to_bboxes(
-                out[i], anchor, S=S, is_preds=True
-            )
+            boxes_scale_i = cells_to_bboxes(out[i], anchor, S=S, is_preds=True)
             for idx, (box) in enumerate(boxes_scale_i):
                 bboxes[idx] += box
 
@@ -518,14 +520,16 @@ def plot_couple_examples(model, loader, thresh, iou_thresh, anchors):
 
     for i in range(batch_size):
         nms_boxes = non_max_suppression(
-            bboxes[i], iou_threshold=iou_thresh, threshold=thresh, box_format="midpoint",
+            bboxes[i],
+            iou_threshold=iou_thresh,
+            threshold=thresh,
+            box_format="midpoint",
         )
-        plot_image(x[i].permute(1,2,0).detach().cpu(), nms_boxes)
-
+        plot_image(x[i].permute(1, 2, 0).detach().cpu(), nms_boxes)
 
 
 def seed_everything(seed=42):
-    os.environ['PYTHONHASHSEED'] = str(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)

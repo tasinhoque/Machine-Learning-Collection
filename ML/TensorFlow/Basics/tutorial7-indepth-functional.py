@@ -66,12 +66,19 @@ x = layers.Conv2D(
 )(inputs)
 x = layers.BatchNormalization()(x)
 x = keras.activations.relu(x)
-x = layers.Conv2D(64, 3, kernel_regularizer=regularizers.l2(WEIGHT_DECAY),)(x)
+x = layers.Conv2D(
+    64,
+    3,
+    kernel_regularizer=regularizers.l2(WEIGHT_DECAY),
+)(x)
 x = layers.BatchNormalization()(x)
 x = keras.activations.relu(x)
 x = layers.MaxPooling2D()(x)
 x = layers.Conv2D(
-    64, 3, activation="relu", kernel_regularizer=regularizers.l2(WEIGHT_DECAY),
+    64,
+    3,
+    activation="relu",
+    kernel_regularizer=regularizers.l2(WEIGHT_DECAY),
 )(x)
 x = layers.Conv2D(128, 3, activation="relu")(x)
 x = layers.MaxPooling2D()(x)

@@ -78,7 +78,7 @@ def save_checkpoint(state, filename="my_checkpoint.pth.tar"):
 def load_checkpoint(checkpoint, model, optimizer, lr):
     print("=> Loading checkpoint")
     model.load_state_dict(checkpoint["state_dict"])
-    #optimizer.load_state_dict(checkpoint["optimizer"])
+    # optimizer.load_state_dict(checkpoint["optimizer"])
 
     # If we don't do this then it will just have learning rate of old checkpoint
     # and it will lead to many hours of debugging \:
@@ -87,7 +87,9 @@ def load_checkpoint(checkpoint, model, optimizer, lr):
 
 
 def get_csv_for_blend(loader, model, output_csv_file):
-    warnings.warn("Important to have shuffle=False (and to ensure batch size is even size) when running get_csv_for_blend also set val_transforms to train_loader!")
+    warnings.warn(
+        "Important to have shuffle=False (and to ensure batch size is even size) when running get_csv_for_blend also set val_transforms to train_loader!"
+    )
     model.eval()
     filename_first = []
     filename_second = []
@@ -102,7 +104,9 @@ def get_csv_for_blend(loader, model, output_csv_file):
             features = F.adaptive_avg_pool2d(
                 model.extract_features(images), output_size=1
             )
-            features_logits = features.reshape(features.shape[0] // 2, 2, features.shape[1])
+            features_logits = features.reshape(
+                features.shape[0] // 2, 2, features.shape[1]
+            )
             preds = model(images).reshape(images.shape[0] // 2, 2, 1)
             new_features = (
                 torch.cat([features_logits, preds], dim=2)

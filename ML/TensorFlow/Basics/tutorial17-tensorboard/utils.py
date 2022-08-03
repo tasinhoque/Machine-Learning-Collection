@@ -59,7 +59,9 @@ def image_grid(data, labels, class_names):
 def get_confusion_matrix(y_labels, logits, class_names):
     preds = np.argmax(logits, axis=1)
     cm = sklearn.metrics.confusion_matrix(
-        y_labels, preds, labels=np.arange(len(class_names)),
+        y_labels,
+        preds,
+        labels=np.arange(len(class_names)),
     )
 
     return cm
@@ -76,14 +78,21 @@ def plot_confusion_matrix(cm, class_names):
     plt.yticks(indices, class_names)
 
     # Normalize Confusion Matrix
-    cm = np.around(cm.astype("float") / cm.sum(axis=1)[:, np.newaxis], decimals=3,)
+    cm = np.around(
+        cm.astype("float") / cm.sum(axis=1)[:, np.newaxis],
+        decimals=3,
+    )
 
     threshold = cm.max() / 2.0
     for i in range(size):
         for j in range(size):
             color = "white" if cm[i, j] > threshold else "black"
             plt.text(
-                i, j, cm[i, j], horizontalalignment="center", color=color,
+                i,
+                j,
+                cm[i, j],
+                horizontalalignment="center",
+                color=color,
             )
 
     plt.tight_layout()
@@ -107,7 +116,7 @@ def create_sprite(data):
         data = np.tile(data[..., np.newaxis], (1, 1, 1, 3))
 
     n = int(np.ceil(np.sqrt(data.shape[0])))
-    padding = ((0, n ** 2 - data.shape[0]), (0, 0), (0, 0), (0, 0))
+    padding = ((0, n**2 - data.shape[0]), (0, 0), (0, 0), (0, 0))
     data = np.pad(data, padding, mode="constant", constant_values=0)
 
     # Tile images into sprite

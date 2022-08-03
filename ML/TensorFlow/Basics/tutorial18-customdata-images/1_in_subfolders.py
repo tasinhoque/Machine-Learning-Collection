@@ -71,7 +71,9 @@ for epochs in range(10):
 
 model.compile(
     optimizer=keras.optimizers.Adam(),
-    loss=[keras.losses.SparseCategoricalCrossentropy(from_logits=True),],
+    loss=[
+        keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    ],
     metrics=["accuracy"],
 )
 
@@ -126,7 +128,9 @@ for epoch in range(10):
 # Redo model.compile to reset the optimizer states
 model.compile(
     optimizer=keras.optimizers.Adam(),
-    loss=[keras.losses.SparseCategoricalCrossentropy(from_logits=True),],
+    loss=[
+        keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    ],
     metrics=["accuracy"],
 )
 

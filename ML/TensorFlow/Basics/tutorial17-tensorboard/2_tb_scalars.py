@@ -118,7 +118,9 @@ for lr in [1e-1, 1e-2, 1e-3, 1e-4, 1e-5]:
             with train_writer.as_default():
                 tf.summary.scalar("Loss", loss, step=train_step)
                 tf.summary.scalar(
-                    "Accuracy", acc_metric.result(), step=train_step,
+                    "Accuracy",
+                    acc_metric.result(),
+                    step=train_step,
                 )
                 train_step += 1
 
@@ -134,7 +136,9 @@ for lr in [1e-1, 1e-2, 1e-3, 1e-4, 1e-5]:
             with test_writer.as_default():
                 tf.summary.scalar("Loss", loss, step=test_step)
                 tf.summary.scalar(
-                    "Accuracy", acc_metric.result(), step=test_step,
+                    "Accuracy",
+                    acc_metric.result(),
+                    step=test_step,
                 )
                 test_step += 1
 

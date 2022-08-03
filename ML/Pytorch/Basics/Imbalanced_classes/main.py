@@ -9,6 +9,7 @@ import torch.nn as nn
 # 1. Oversampling
 # 2. Class weighting
 
+
 def get_loader(root_dir, batch_size):
     my_transforms = transforms.Compose(
         [
@@ -21,7 +22,7 @@ def get_loader(root_dir, batch_size):
     class_weights = []
     for root, subdir, files in os.walk(root_dir):
         if len(files) > 0:
-            class_weights.append(1/len(files))
+            class_weights.append(1 / len(files))
 
     sample_weights = [0] * len(dataset)
 
@@ -29,8 +30,9 @@ def get_loader(root_dir, batch_size):
         class_weight = class_weights[label]
         sample_weights[idx] = class_weight
 
-    sampler = WeightedRandomSampler(sample_weights, num_samples=
-                                    len(sample_weights), replacement=True)
+    sampler = WeightedRandomSampler(
+        sample_weights, num_samples=len(sample_weights), replacement=True
+    )
 
     loader = DataLoader(dataset, batch_size=batch_size, sampler=sampler)
     return loader
@@ -43,12 +45,12 @@ def main():
     num_elkhounds = 0
     for epoch in range(10):
         for data, labels in loader:
-            num_retrievers += torch.sum(labels==0)
-            num_elkhounds += torch.sum(labels==1)
+            num_retrievers += torch.sum(labels == 0)
+            num_elkhounds += torch.sum(labels == 1)
 
     print(num_retrievers)
     print(num_elkhounds)
 
+
 if __name__ == "__main__":
     main()
-

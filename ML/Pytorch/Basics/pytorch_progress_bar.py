@@ -15,7 +15,7 @@ loader = DataLoader(ds, batch_size=8)
 model = nn.Sequential(
     nn.Conv2d(3, 10, kernel_size=3, padding=1, stride=1),
     nn.Flatten(),
-    nn.Linear(10*224*224, 10),
+    nn.Linear(10 * 224 * 224, 10),
 )
 
 NUM_EPOCHS = 100
@@ -35,7 +35,3 @@ for epoch in range(NUM_EPOCHS):
         loop.set_postfix(loss=torch.rand(1).item(), acc=torch.rand(1).item())
 
 # There you go. Hope it was useful :)
-
-
-
-

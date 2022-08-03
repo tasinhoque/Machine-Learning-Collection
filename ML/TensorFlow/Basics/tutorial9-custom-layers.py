@@ -45,7 +45,10 @@ class Dense(layers.Layer):
             trainable=True,
         )
         self.b = self.add_weight(
-            name="b", shape=(self.units,), initializer="random_normal", trainable=True,
+            name="b",
+            shape=(self.units,),
+            initializer="random_normal",
+            trainable=True,
         )
 
     def call(self, inputs):

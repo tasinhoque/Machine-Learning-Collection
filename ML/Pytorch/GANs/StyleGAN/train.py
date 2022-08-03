@@ -24,7 +24,7 @@ torch.backends.cudnn.benchmarks = True
 def get_loader(image_size):
     transform = transforms.Compose(
         [
-            #transforms.Resize((image_size, image_size)),
+            # transforms.Resize((image_size, image_size)),
             transforms.ToTensor(),
             transforms.RandomHorizontalFlip(p=0.5),
             transforms.Normalize(
@@ -81,7 +81,7 @@ def train_fn(
             loss_critic = (
                 -(torch.mean(critic_real) - torch.mean(critic_fake))
                 + config.LAMBDA_GP * gp
-                + (0.001 * torch.mean(critic_real ** 2))
+                + (0.001 * torch.mean(critic_real**2))
             )
 
         opt_critic.zero_grad()
@@ -125,7 +125,6 @@ def train_fn(
             loss_critic=loss_critic.item(),
         )
 
-
     return tensorboard_step, alpha
 
 
@@ -136,13 +135,23 @@ def main():
     gen = Generator(
         config.Z_DIM, config.W_DIM, config.IN_CHANNELS, img_channels=config.CHANNELS_IMG
     ).to(config.DEVICE)
-    critic = Discriminator(
-        config.IN_CHANNELS, img_channels=config.CHANNELS_IMG
-    ).to(config.DEVICE)
+    critic = Discriminator(config.IN_CHANNELS, img_channels=config.CHANNELS_IMG).to(
+        config.DEVICE
+    )
     ema = EMA(gamma=0.999, save_frequency=2000)
     # initialize optimizers and scalers for FP16 training
-    opt_gen = optim.Adam([{"params": [param for name, param in gen.named_parameters() if "map" not in name]},
-                          {"params": gen.map.parameters(), "lr": 1e-5}], lr=config.LEARNING_RATE, betas=(0.0, 0.99))
+    opt_gen = optim.Adam(
+        [
+            {
+                "params": [
+                    param for name, param in gen.named_parameters() if "map" not in name
+                ]
+            },
+            {"params": gen.map.parameters(), "lr": 1e-5},
+        ],
+        lr=config.LEARNING_RATE,
+        betas=(0.0, 0.99),
+    )
     opt_critic = optim.Adam(
         critic.parameters(), lr=config.LEARNING_RATE, betas=(0.0, 0.99)
     )
@@ -154,10 +163,16 @@ def main():
 
     if config.LOAD_MODEL:
         load_checkpoint(
-            config.CHECKPOINT_GEN, gen, opt_gen, config.LEARNING_RATE,
+            config.CHECKPOINT_GEN,
+            gen,
+            opt_gen,
+            config.LEARNING_RATE,
         )
         load_checkpoint(
-            config.CHECKPOINT_CRITIC, critic, opt_critic, config.LEARNING_RATE,
+            config.CHECKPOINT_CRITIC,
+            critic,
+            opt_critic,
+            config.LEARNING_RATE,
         )
 
     gen.train()
@@ -167,8 +182,8 @@ def main():
     # start at step that corresponds to img size that we set in config
     step = int(log2(config.START_TRAIN_AT_IMG_SIZE / 4))
     for num_epochs in config.PROGRESSIVE_EPOCHS[step:]:
-        alpha = 1e-5   # start with very low alpha
-        loader, dataset = get_loader(4 * 2 ** step)  # 4->0, 8->1, 16->2, 32->3, 64 -> 4
+        alpha = 1e-5  # start with very low alpha
+        loader, dataset = get_loader(4 * 2**step)  # 4->0, 8->1, 16->2, 32->3, 64 -> 4
         print(f"Current image size: {4 * 2 ** step}")
 
         for epoch in range(num_epochs):

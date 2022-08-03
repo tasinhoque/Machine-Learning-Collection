@@ -18,12 +18,17 @@ transform = A.Compose(
         A.HorizontalFlip(p=0.5),
         A.VerticalFlip(p=0.1),
         A.RGBShift(r_shift_limit=25, g_shift_limit=25, b_shift_limit=25, p=0.9),
-        A.OneOf([
-            A.Blur(blur_limit=3, p=0.5),
-            A.ColorJitter(p=0.5),
-        ], p=1.0),
-    ], bbox_params=A.BboxParams(format="pascal_voc", min_area=2048,
-                                min_visibility=0.3, label_fields=[])
+        A.OneOf(
+            [
+                A.Blur(blur_limit=3, p=0.5),
+                A.ColorJitter(p=0.5),
+            ],
+            p=1.0,
+        ),
+    ],
+    bbox_params=A.BboxParams(
+        format="pascal_voc", min_area=2048, min_visibility=0.3, label_fields=[]
+    ),
 )
 
 images_list = [image]

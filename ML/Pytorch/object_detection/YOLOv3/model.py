@@ -146,7 +146,12 @@ class YOLOv3(nn.Module):
 
             elif isinstance(module, list):
                 num_repeats = module[1]
-                layers.append(ResidualBlock(in_channels, num_repeats=num_repeats,))
+                layers.append(
+                    ResidualBlock(
+                        in_channels,
+                        num_repeats=num_repeats,
+                    )
+                )
 
             elif isinstance(module, str):
                 if module == "S":
@@ -158,7 +163,9 @@ class YOLOv3(nn.Module):
                     in_channels = in_channels // 2
 
                 elif module == "U":
-                    layers.append(nn.Upsample(scale_factor=2),)
+                    layers.append(
+                        nn.Upsample(scale_factor=2),
+                    )
                     in_channels = in_channels * 3
 
         return layers
@@ -170,7 +177,25 @@ if __name__ == "__main__":
     model = YOLOv3(num_classes=num_classes)
     x = torch.randn((2, 3, IMAGE_SIZE, IMAGE_SIZE))
     out = model(x)
-    assert model(x)[0].shape == (2, 3, IMAGE_SIZE//32, IMAGE_SIZE//32, num_classes + 5)
-    assert model(x)[1].shape == (2, 3, IMAGE_SIZE//16, IMAGE_SIZE//16, num_classes + 5)
-    assert model(x)[2].shape == (2, 3, IMAGE_SIZE//8, IMAGE_SIZE//8, num_classes + 5)
+    assert model(x)[0].shape == (
+        2,
+        3,
+        IMAGE_SIZE // 32,
+        IMAGE_SIZE // 32,
+        num_classes + 5,
+    )
+    assert model(x)[1].shape == (
+        2,
+        3,
+        IMAGE_SIZE // 16,
+        IMAGE_SIZE // 16,
+        num_classes + 5,
+    )
+    assert model(x)[2].shape == (
+        2,
+        3,
+        IMAGE_SIZE // 8,
+        IMAGE_SIZE // 8,
+        num_classes + 5,
+    )
     print("Success!")

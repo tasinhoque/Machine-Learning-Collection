@@ -59,7 +59,7 @@ class MyModel(nn.Module):
         super().__init__()
         self.model = nn.Sequential(
             nn.BatchNorm1d((1536 + 1) * 2),
-            nn.Linear((1536+1) * 2, 500),
+            nn.Linear((1536 + 1) * 2, 500),
             nn.BatchNorm1d(500),
             nn.ReLU(),
             nn.Dropout(0.2),
@@ -77,7 +77,9 @@ class MyModel(nn.Module):
 if __name__ == "__main__":
     model = MyModel().to(config.DEVICE)
     ds = MyDataset(csv_file="train/train_blend.csv")
-    loader = DataLoader(ds, batch_size=256, num_workers=3, pin_memory=True, shuffle=True)
+    loader = DataLoader(
+        ds, batch_size=256, num_workers=3, pin_memory=True, shuffle=True
+    )
     ds_val = MyDataset(csv_file="train/val_blend.csv")
     loader_val = DataLoader(
         ds_val, batch_size=256, num_workers=3, pin_memory=True, shuffle=True
@@ -114,7 +116,10 @@ if __name__ == "__main__":
         print(f"Loss: {sum(losses)/len(losses)}")
 
     if config.SAVE_MODEL:
-        checkpoint = {"state_dict": model.state_dict(), "optimizer": optimizer.state_dict()}
+        checkpoint = {
+            "state_dict": model.state_dict(),
+            "optimizer": optimizer.state_dict(),
+        }
         save_checkpoint(checkpoint, filename="linear.pth.tar")
 
     preds, labels = check_accuracy(loader_val, model)

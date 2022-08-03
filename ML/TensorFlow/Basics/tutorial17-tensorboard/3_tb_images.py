@@ -107,6 +107,8 @@ for epoch in range(num_epochs):
 
         with writer.as_default():
             tf.summary.image(
-                "Visualize Images", plot_to_image(figure), step=step,
+                "Visualize Images",
+                plot_to_image(figure),
+                step=step,
             )
             step += 1

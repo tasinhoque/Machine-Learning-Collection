@@ -76,9 +76,12 @@ class Generator(nn.Module):
             bias=True,
         )
         self.residuals = nn.Sequential(*[RRDB(num_channels) for _ in range(num_blocks)])
-        self.conv = nn.Conv2d(num_channels, num_channels, kernel_size=3, stride=1, padding=1)
+        self.conv = nn.Conv2d(
+            num_channels, num_channels, kernel_size=3, stride=1, padding=1
+        )
         self.upsamples = nn.Sequential(
-            UpsampleBlock(num_channels), UpsampleBlock(num_channels),
+            UpsampleBlock(num_channels),
+            UpsampleBlock(num_channels),
         )
         self.final = nn.Sequential(
             nn.Conv2d(num_channels, num_channels, 3, 1, 1, bias=True),
@@ -123,6 +126,7 @@ class Discriminator(nn.Module):
         x = self.blocks(x)
         return self.classifier(x)
 
+
 def initialize_weights(model, scale=0.1):
     for m in model.modules():
         if isinstance(m, nn.Conv2d):
@@ -145,10 +149,6 @@ def test():
     print(gen_out.shape)
     print(disc_out.shape)
 
+
 if __name__ == "__main__":
     test()
-
-
-
-
-

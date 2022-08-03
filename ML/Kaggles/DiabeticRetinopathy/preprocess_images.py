@@ -45,7 +45,9 @@ def resize_maintain_aspect(image, desired_size):
     new_size = tuple([int(x * ratio) for x in old_size])
     im = image.resize(new_size, Image.ANTIALIAS)
     new_im = Image.new("RGB", (desired_size, desired_size))
-    new_im.paste(im, ((desired_size - new_size[0]) // 2, (desired_size - new_size[1]) // 2))
+    new_im.paste(
+        im, ((desired_size - new_size[0]) // 2, (desired_size - new_size[1]) // 2)
+    )
     return new_im
 
 
@@ -78,5 +80,9 @@ def fast_image_resize(input_path_folder, output_path_folder, output_size=None):
 
 
 if __name__ == "__main__":
-    fast_image_resize("../train/images/", "../train/images_resized_150/", output_size=(150, 150))
-    fast_image_resize("../test/images/", "../test/images_resized_150/", output_size=(150, 150))
+    fast_image_resize(
+        "../train/images/", "../train/images_resized_150/", output_size=(150, 150)
+    )
+    fast_image_resize(
+        "../test/images/", "../test/images_resized_150/", output_size=(150, 150)
+    )

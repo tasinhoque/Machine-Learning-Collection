@@ -6,12 +6,7 @@ import config
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 from efficientnet_pytorch import EfficientNet
-from utils import (
-    load_checkpoint,
-    save_checkpoint,
-    get_rmse,
-    get_submission
-)
+from utils import load_checkpoint, save_checkpoint, get_rmse, get_submission
 
 
 def train_one_epoch(loader, model, optimizer, loss_fn, scaler, device):
@@ -78,7 +73,9 @@ def main():
     model = EfficientNet.from_pretrained("efficientnet-b0")
     model._fc = nn.Linear(1280, 30)
     model = model.to(config.DEVICE)
-    optimizer = optim.Adam(model.parameters(), lr=config.LEARNING_RATE, weight_decay=config.WEIGHT_DECAY)
+    optimizer = optim.Adam(
+        model.parameters(), lr=config.LEARNING_RATE, weight_decay=config.WEIGHT_DECAY
+    )
     scaler = torch.cuda.amp.GradScaler()
 
     model_4 = EfficientNet.from_pretrained("efficientnet-b0")
@@ -89,9 +86,15 @@ def main():
     model_15 = model_15.to(config.DEVICE)
 
     if config.LOAD_MODEL and config.CHECKPOINT_FILE in os.listdir():
-        load_checkpoint(torch.load(config.CHECKPOINT_FILE), model, optimizer, config.LEARNING_RATE)
-        load_checkpoint(torch.load("b0_4.pth.tar"), model_4, optimizer, config.LEARNING_RATE)
-        load_checkpoint(torch.load("b0_15.pth.tar"), model_15, optimizer, config.LEARNING_RATE)
+        load_checkpoint(
+            torch.load(config.CHECKPOINT_FILE), model, optimizer, config.LEARNING_RATE
+        )
+        load_checkpoint(
+            torch.load("b0_4.pth.tar"), model_4, optimizer, config.LEARNING_RATE
+        )
+        load_checkpoint(
+            torch.load("b0_15.pth.tar"), model_15, optimizer, config.LEARNING_RATE
+        )
 
     get_submission(test_loader, test_ds, model_15, model_4)
 
@@ -106,6 +109,7 @@ def main():
                 "optimizer": optimizer.state_dict(),
             }
             save_checkpoint(checkpoint, filename=config.CHECKPOINT_FILE)
+
 
 if __name__ == "__main__":
     main()

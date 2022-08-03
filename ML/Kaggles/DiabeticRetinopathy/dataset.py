@@ -28,7 +28,9 @@ class DRDataset(Dataset):
             image_file, label = self.image_files[index], -1
             image_file = image_file.replace(".jpeg", "")
 
-        image = np.array(Image.open(os.path.join(self.images_folder, image_file+".jpeg")))
+        image = np.array(
+            Image.open(os.path.join(self.images_folder, image_file + ".jpeg"))
+        )
 
         if self.transform:
             image = self.transform(image=image)["image"]
@@ -53,4 +55,5 @@ if __name__ == "__main__":
         print(x.shape)
         print(label.shape)
         import sys
+
         sys.exit()

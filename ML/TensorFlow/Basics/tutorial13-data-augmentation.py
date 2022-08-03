@@ -57,9 +57,14 @@ ds_test = ds_train.prefetch(AUTOTUNE)
 # TF >= 2.3.0
 data_augmentation = keras.Sequential(
     [
-        layers.experimental.preprocessing.Resizing(height=32, width=32,),
+        layers.experimental.preprocessing.Resizing(
+            height=32,
+            width=32,
+        ),
         layers.experimental.preprocessing.RandomFlip(mode="horizontal"),
-        layers.experimental.preprocessing.RandomContrast(factor=0.1,),
+        layers.experimental.preprocessing.RandomContrast(
+            factor=0.1,
+        ),
     ]
 )
 

@@ -5,13 +5,14 @@ from math import log2
 
 factors = [1, 1, 1, 1, 1 / 2, 1 / 4, 1 / 8, 1 / 16, 1 / 32]
 
+
 class PixelNorm(nn.Module):
     def __init__(self):
         super(PixelNorm, self).__init__()
         self.epsilon = 1e-8
 
     def forward(self, x):
-        return x / torch.sqrt(torch.mean(x ** 2, dim=1, keepdim=True) + self.epsilon)
+        return x / torch.sqrt(torch.mean(x**2, dim=1, keepdim=True) + self.epsilon)
 
 
 class MappingNetwork(nn.Module):
@@ -49,6 +50,7 @@ class InjectNoise(nn.Module):
         noise = torch.randn((x.shape[0], 1, x.shape[2], x.shape[3]), device=x.device)
         return x + self.weight * noise
 
+
 class AdaIN(nn.Module):
     def __init__(self, channels, w_dim):
         super().__init__()
@@ -65,11 +67,17 @@ class AdaIN(nn.Module):
 
 class WSConv2d(nn.Module):
     def __init__(
-        self, in_channels, out_channels, kernel_size=3, stride=1, padding=1, gain=2,
+        self,
+        in_channels,
+        out_channels,
+        kernel_size=3,
+        stride=1,
+        padding=1,
+        gain=2,
     ):
         super(WSConv2d, self).__init__()
         self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding)
-        self.scale = (gain / (in_channels * (kernel_size ** 2))) ** 0.5
+        self.scale = (gain / (in_channels * (kernel_size**2))) ** 0.5
         self.bias = self.conv.bias
         self.conv.bias = None
 
@@ -83,11 +91,14 @@ class WSConv2d(nn.Module):
 
 class WSLinear(nn.Module):
     def __init__(
-        self, in_features, out_features, gain=2,
+        self,
+        in_features,
+        out_features,
+        gain=2,
     ):
         super(WSLinear, self).__init__()
         self.linear = nn.Linear(in_features, out_features)
-        self.scale = (gain / in_features)**0.5
+        self.scale = (gain / in_features) ** 0.5
         self.bias = self.linear.bias
         self.linear.bias = None
 
@@ -115,6 +126,7 @@ class GenBlock(nn.Module):
         x = self.adain2(self.leaky(self.inject_noise2(self.conv2(x))), w)
         return x
 
+
 class ConvBlock(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(ConvBlock, self).__init__()
@@ -137,7 +149,9 @@ class Generator(nn.Module):
         self.initial_adain2 = AdaIN(in_channels, w_dim)
         self.initial_noise1 = InjectNoise(in_channels)
         self.initial_noise2 = InjectNoise(in_channels)
-        self.initial_conv = nn.Conv2d(in_channels, in_channels, kernel_size=3, stride=1, padding=1)
+        self.initial_conv = nn.Conv2d(
+            in_channels, in_channels, kernel_size=3, stride=1, padding=1
+        )
         self.leaky = nn.LeakyReLU(0.2, inplace=True)
 
         self.initial_rgb = WSConv2d(
@@ -148,7 +162,9 @@ class Generator(nn.Module):
             nn.ModuleList([self.initial_rgb]),
         )
 
-        for i in range(len(factors) - 1):  # -1 to prevent index error because of factors[i+1]
+        for i in range(
+            len(factors) - 1
+        ):  # -1 to prevent index error because of factors[i+1]
             conv_in_c = int(in_channels * factors[i])
             conv_out_c = int(in_channels * factors[i + 1])
             self.prog_blocks.append(GenBlock(conv_in_c, conv_out_c, w_dim))
@@ -280,8 +296,8 @@ if __name__ == "__main__":
 
     print(tot)
     import sys
-    sys.exit()
 
+    sys.exit()
 
     for img_size in [4, 8, 16, 32, 64, 128, 256, 512, 1024]:
         num_steps = int(log2(img_size / 4))

@@ -95,7 +95,8 @@ model.compile(
 )
 
 tensorboard_callback = keras.callbacks.TensorBoard(
-    log_dir="tb_callback_dir", histogram_freq=1,
+    log_dir="tb_callback_dir",
+    histogram_freq=1,
 )
 
 model.fit(

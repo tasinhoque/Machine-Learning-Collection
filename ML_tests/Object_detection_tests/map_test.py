@@ -5,6 +5,7 @@ import torch
 sys.path.append("ML/Pytorch/object_detection/metrics/")
 from mean_avg_precision import mean_average_precision
 
+
 class TestMeanAveragePrecision(unittest.TestCase):
     def setUp(self):
         # test cases we want to run

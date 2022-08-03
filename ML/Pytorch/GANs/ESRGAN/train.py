@@ -12,6 +12,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 torch.backends.cudnn.benchmark = True
 
+
 def train_fn(
     loader,
     disc,
@@ -113,7 +114,6 @@ def main():
             config.LEARNING_RATE,
         )
 
-
     for epoch in range(config.NUM_EPOCHS):
         tb_step = train_fn(
             loader,
@@ -141,7 +141,9 @@ if __name__ == "__main__":
         # Will just use pretrained weights and run on images
         # in test_images/ and save the ones to SR in saved/
         gen = Generator(in_channels=3).to(config.DEVICE)
-        opt_gen = optim.Adam(gen.parameters(), lr=config.LEARNING_RATE, betas=(0.0, 0.9))
+        opt_gen = optim.Adam(
+            gen.parameters(), lr=config.LEARNING_RATE, betas=(0.0, 0.9)
+        )
         load_checkpoint(
             config.CHECKPOINT_GEN,
             gen,

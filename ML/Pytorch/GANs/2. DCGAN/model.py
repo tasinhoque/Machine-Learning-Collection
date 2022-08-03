@@ -11,9 +11,7 @@ class Discriminator(nn.Module):
         super(Discriminator, self).__init__()
         self.disc = nn.Sequential(
             # input: N x channels_img x 64 x 64
-            nn.Conv2d(
-                channels_img, features_d, kernel_size=4, stride=2, padding=1
-            ),
+            nn.Conv2d(channels_img, features_d, kernel_size=4, stride=2, padding=1),
             nn.LeakyReLU(0.2),
             # _block(in_channels, out_channels, kernel_size, stride, padding)
             self._block(features_d, features_d * 2, 4, 2, 1),
@@ -34,7 +32,7 @@ class Discriminator(nn.Module):
                 padding,
                 bias=False,
             ),
-            #nn.BatchNorm2d(out_channels),
+            # nn.BatchNorm2d(out_channels),
             nn.LeakyReLU(0.2),
         )
 
@@ -68,7 +66,7 @@ class Generator(nn.Module):
                 padding,
                 bias=False,
             ),
-            #nn.BatchNorm2d(out_channels),
+            # nn.BatchNorm2d(out_channels),
             nn.ReLU(),
         )
 
@@ -81,6 +79,7 @@ def initialize_weights(model):
     for m in model.modules():
         if isinstance(m, (nn.Conv2d, nn.ConvTranspose2d, nn.BatchNorm2d)):
             nn.init.normal_(m.weight.data, 0.0, 0.02)
+
 
 def test():
     N, in_channels, H, W = 8, 3, 64, 64
