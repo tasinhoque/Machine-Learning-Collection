@@ -1,6 +1,7 @@
+import statistics
+
 import torch
 import torch.nn as nn
-import statistics
 import torchvision.models as models
 
 
@@ -8,7 +9,9 @@ class EncoderCNN(nn.Module):
     def __init__(self, embed_size, train_CNN=False):
         super(EncoderCNN, self).__init__()
         self.train_CNN = train_CNN
-        self.inception = models.inception_v3(pretrained=True, aux_logits=False)
+        self.inception = models.inception_v3(
+            pretrained=True,
+        )
         self.inception.fc = nn.Linear(self.inception.fc.in_features, embed_size)
         self.relu = nn.ReLU()
         self.times = []

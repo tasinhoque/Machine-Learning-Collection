@@ -19,9 +19,7 @@ import torchvision.datasets as datasets  # Standard datasets
 import torchvision.transforms as transforms  # Transformations we can perform on our dataset for augmentation
 from torch import nn  # All neural network modules
 from torch import optim  # For optimizers like SGD, Adam, etc.
-from torch.utils.data import (
-    DataLoader,
-)  # Gives easier dataset managment by creating mini batches etc.
+from torch.utils.data import DataLoader
 from tqdm import tqdm  # For nice progress bar!
 
 
@@ -65,6 +63,7 @@ num_classes = 10
 learning_rate = 0.001
 batch_size = 64
 num_epochs = 3
+load_model = True
 
 # Load Data
 train_dataset = datasets.MNIST(
@@ -83,8 +82,33 @@ model = CNN(in_channels=in_channels, num_classes=num_classes).to(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
+
+def save_checkpoint(state, filename="my_checkpoint.pth"):
+    print("Saving checkpoint")
+    torch.save(state, filename)
+
+
+def load_checkpoint(checkpoint):
+    print("Loading checkpoint")
+    model.load_state_dict(checkpoint["state_dict"])
+    optimizer.load_state_dict(checkpoint["optimizer"])
+
+
+if load_model:
+    load_checkpoint(torch.load("my_checkpoint.pth"))
+
 # Train Network
 for epoch in range(num_epochs):
+    losses = []
+
+    if epoch % 3 == 0:
+        checkpoint = {
+            "state_dict": model.state_dict(),
+            "optimizer": optimizer.state_dict(),
+        }
+
+        save_checkpoint(checkpoint)
+
     for batch_idx, (data, targets) in enumerate(tqdm(train_loader)):
         # Get data to cuda if possible
         data = data.to(device=device)
@@ -121,5 +145,5 @@ def check_accuracy(loader, model):
     return float(num_correct) / num_samples
 
 
-print(f"Accuracy on training set: {check_accuracy(train_loader, model)*100:.2%}")
+print(f"Accuracy on training set: {check_accuracy(train_loader, model):.2%}")
 print(f"Accuracy on test set: {check_accuracy(test_loader, model):.2%}")

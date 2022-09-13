@@ -1,12 +1,13 @@
 import torch
-from tqdm import tqdm
 import torch.nn as nn
 import torch.optim as optim
 import torchvision.transforms as transforms
 from torch.utils.tensorboard import SummaryWriter
-from utils import save_checkpoint, load_checkpoint, print_examples
+from tqdm import tqdm
+
 from get_loader import get_loader
 from model import CNNtoRNN
+from utils import load_checkpoint, print_examples, save_checkpoint
 
 
 def train():
@@ -79,7 +80,7 @@ def train():
             imgs = imgs.to(device)
             captions = captions.to(device)
 
-            outputs = model(imgs, captions[:-1])
+            outputs = model(torch.tensor(imgs), captions[:-1])
             loss = criterion(
                 outputs.reshape(-1, outputs.shape[2]), captions.reshape(-1)
             )

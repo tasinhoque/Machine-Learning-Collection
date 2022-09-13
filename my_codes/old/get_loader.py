@@ -1,21 +1,13 @@
-import os  # when loading file paths
+import os
 
-import pandas as pd  # for lookup in annotation file
-import spacy  # for tokenizer
+import pandas as pd
+import spacy
 import torch
-import torchvision.transforms as transforms
-from PIL import Image  # Load img
-from torch.nn.utils.rnn import pad_sequence  # pad batch
+from PIL import Image
+from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, Dataset
+from torchvision import transforms
 
-# We want to convert text -> numerical values
-# 1. We need a Vocabulary mapping each word to a index
-# 2. We need to setup a Pytorch dataset to load the data
-# 3. Setup padding of every batch (all examples should be
-#    of same seq_len and setup dataloader)
-# Note that loading the image is very easy compared to the text!
-
-# Download with: python -m spacy download en
 spacy_eng = spacy.load("en_core_web_sm")
 
 
@@ -63,11 +55,9 @@ class FlickrDataset(Dataset):
         self.df = pd.read_csv(captions_file)
         self.transform = transform
 
-        # Get img, caption columns
         self.imgs = self.df["image"]
         self.captions = self.df["caption"]
 
-        # Initialize vocabulary and build vocab
         self.vocab = Vocabulary(freq_threshold)
         self.vocab.build_vocabulary(self.captions.tolist())
 
@@ -112,9 +102,7 @@ def get_loader(
     pin_memory=True,
 ):
     dataset = FlickrDataset(root_folder, annotation_file, transform=transform)
-
     pad_idx = dataset.vocab.stoi["<PAD>"]
-
     loader = DataLoader(
         dataset=dataset,
         batch_size=batch_size,
@@ -124,7 +112,7 @@ def get_loader(
         collate_fn=MyCollate(pad_idx=pad_idx),
     )
 
-    return loader, dataset
+    return loader
 
 
 if __name__ == "__main__":
@@ -135,11 +123,10 @@ if __name__ == "__main__":
         ]
     )
 
-    loader, dataset = get_loader(
-        "flickr8k/images/", "flickr8k/captions.txt", transform=transform
-    )
+    dataloader = get_loader("flickr8k/images", "flickr8k/captions.txt", transform)
+    print("All done", len(dataloader))
 
-    for idx, (imgs, captions) in enumerate(loader):
+    for idx, (imgs, captions) in enumerate(dataloader):
         print(imgs.shape)
         print(captions.shape)
         break

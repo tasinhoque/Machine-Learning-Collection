@@ -1,8 +1,9 @@
+import spacy
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import spacy
-from torchtext.data import Field, TabularDataset, BucketIterator
+
+from torchtext.data import BucketIterator, Field, TabularDataset
 
 ######### Loading from JSON/CSV/TSV files #########
 
@@ -14,7 +15,7 @@ from torchtext.data import Field, TabularDataset, BucketIterator
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # python -m spacy download en
-spacy_en = spacy.load("en")
+spacy_en = spacy.load("en_core_web_sm")
 
 
 def tokenize(text):
